@@ -1,0 +1,61 @@
+from flask import Flask, render_template, request, jsonify
+import requests
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
+
+app = Flask(__name__)
+
+# Your Mapbox token
+MAPBOX_TOKEN = 'pk.eyJ1Ijoic3ViaGFtcHJlZXQiLCJhIjoiY2toY2IwejF1MDdodzJxbWRuZHAweDV6aiJ9.Ys8MP5kVTk5P9V2TDvnuDg'
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/geocode', methods=['POST'])
+def geocode():
+    address = request.json['address']
+    url = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{address}.json?access_token={MAPBOX_TOKEN}"
+    response = requests.get(url)
+    data = response.json()
+
+    if data['features']:
+        longitude, latitude = data['features'][0]['center']
+        return jsonify({'latitude': latitude, 'longitude': longitude})
+    else:
+        return jsonify({'error': 'Address not found'}), 404
+
+@app.route('/reverse_geocode', methods=['POST'])
+def reverse_geocode():
+    latitude = request.json['latitude']
+    longitude = request.json['longitude']
+    geolocator = Nominatim(user_agent="geoapiExercises")
+    location = geolocator.reverse((latitude, longitude), exactly_one=True)
+    
+    if location:
+        place_name = location.address
+        return jsonify({'place_name': place_name})
+    else:
+        return jsonify({'error': 'Location not found'}), 404
+
+@app.route('/route', methods=['POST'])
+def route():
+    start = request.json['start']
+    destination = request.json['destination']
+    
+    # Example for calculating distance (geodesic)
+    start_coords = (start['latitude'], start['longitude'])
+    destination_coords = (destination['latitude'], destination['longitude'])
+    distance = geodesic(start_coords, destination_coords).km
+
+    # For drawing the route, you'd need a frontend library or use Mapbox GL on the client side.
+    # Here we'll just return the start, destination, and distance for simplicity.
+    
+    return jsonify({
+        'start': start,
+        'destination': destination,
+        'distance_km': distance
+    })
+
+if __name__ == '__main__':
+    app.run(debug=True)

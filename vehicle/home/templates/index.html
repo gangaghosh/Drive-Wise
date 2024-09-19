@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="shortcut icon" href="{% static 'img/logo.jpg' %}" type="image/x-icon" style="border-radius:30px;">
+  <title>Drive Wise</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}" />  
+  <!-- fonts style -->
+  <link href=" https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,600,700&display=swap " rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baskervville+SC&display=swap" rel="stylesheet">
+
+
+  <link href="{% static 'style.css' %}" rel="stylesheet" type="text/css"/>
+
+  <link href="{% static 'responsive.css' %}" rel="stylesheet" />
+ 
+
+  <style id="compiled-css" type="text/css">
+    .h1 {
+      display: inline-block;;
+      font-family: monospace;
+      font-size: 38px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      overflow: hidden;
+      animation: typewriter 3.5s steps(30, end), blink-caret 0.5s step-end infinite;
+      border-right: 5px solid black;
+      white-space: nowrap;
+     color : white;
+     
+    }
+
+    .navbar {
+      overflow: hidden;
+      position: fixed; 
+      top: 0; 
+      left:0;
+      width: 100%; 
+    }
+
+    @keyframes typewriter {
+      from {
+        width: 0%;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+
+    @keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: rgb(255, 255, 255);
+  }
+}
+.dots-cont {
+  position: relative;
+  top:8em;
+  left: 40%; 
+  transform: translate(-50%, -50%);
+}
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: white;
+      display: inline-block;
+      border-radius: 50%;
+      right: 0px;
+      bottom: 0px;
+      margin: 0px 2.5px;
+      position: relative;
+      animation: jump 1s infinite;
+    }
+    .dots-cont:hover  .dot {
+      /* position: relative; */
+      /* bottom: 0px; */
+      animation: none;
+    }
+    .dots-cont .dot-1 {
+      -webkit-animation-delay: 100ms;
+      animation-delay: 100ms;
+
+      
+    }
+    .dots-cont .dot-2 {
+      -webkit-animation-delay: 200ms;
+      animation-delay: 200ms;
+    }
+    .dots-cont .dot-3 {
+      -webkit-animation-delay: 300ms;
+      animation-delay: 300ms;
+    }
+    @keyframes jump {
+      0% {
+        bottom: 0px;
+      }
+      20% {
+        bottom: 5px;
+      }
+      40% {
+        bottom: 0px;
+      }
+    }
+    .overlay-text {
+      position: absolute;
+      bottom: 150px; 
+      left: 20px; 
+      color: orange;
+    
+      text-align: left;
+      padding: 10px;
+      font-family: "Bree serif", serif;
+      font-style:normal ;
+      font-weight:bold;
+      
+      
+
+      
+  }
+  
+  .logoname{
+    color:#E5B55C;
+    background:none;
+    font-family:Bree Serif, serif;
+    font-size:2em;
+    font-weight: 800;
+
+  }
+    
+p{
+  text-align:justify;
+}
+
+</style>
+</head>
+
+<body>
+  <div class="hero_area">
+    <!-- header section -->
+    <div class="hero_bg_box">
+      <div class="img-box">
+        <video class="w-100 h-100 position-absolute top-0 start-0" autoplay  muted loop style="object-fit: cover;opacity:0.5;">
+          <source src="{% static 'video/drive2.mp4' %}" type="video/mp4" />
+        </video>
+        <div class="overlay-text">
+          <h1>"Safety Beyond the Wheel: We've Got You Covered."</h1>
+        </div>
+      </div>
+    </div>
+    
+    <header class="header_section">
+      
+      <div class="header_bottom">
+        <div class="container-fluid">
+          <nav class="navbar navbar-expand-lg custom_nav-container" style="background-color:#292929;font-family:Bree serif;">
+            
+              <span>
+                <img src="{% static 'img/logo.png' %}" alt="" width="75 px" height="75px">
+              </span>
+            <div>
+              <div style="color:#E5B55C;font-size:30px;font-family:Bree serif">Drive Wise </div>
+            </div>
+            <div class="collapse navbar-collapse z" id="navbarSupportedContent" >
+              <ul class="navbar-nav">
+                <li class="nav-item active" >
+                  <a class="nav-link" href="" style="color:#E5B55C ; background:none;">Home </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#section" style="color:#E5B55C ;background:none;"> About</a>  
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'service' %}" style="color:#E5B55C ;background:none;"> Services </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+   
+</div> 
+  <!-- about section -->
+  <section class="about_section layout_padding" id="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 px-0 order-md-2">
+          <div class="img_container">
+            <div class="img-box">
+              <img src="{% static 'img/drowsiness_working.jpg' %}" alt="" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-0 order-md-1"> 
+          <div class="detail-box">
+            <div class="heading_container">
+              <h2> 
+                <a href="drowsiness/" style="background-color:#2B7C5B;color:#E5B55C;"> Drowsiness Detection</a>
+                
+              </h2>
+            </div>
+            <p>
+              Drowsiness-related car accidents continue to have a significant effect on road safety. Many of these accidents can be eliminated by 
+              alerting the drivers once they start feeling drowsy. This work presents a non-invasive system for real-time driver drowsiness 
+              detection using visual features.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  
+ 
+
+  <section class="about_section layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 px-0">
+          <div class="img_container">
+            <div class="img-box">
+              <img src="{% static 'img/pedestrian.gif' %}" alt="" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-0">
+          <div class="detail-box">
+            <div class="heading_container ">
+              <h2> 
+                <a href="{% url 'pedstrain' %}" style="background-color:#2B7C5B;color:#E5B55C;"> Pedestrian Crossing Alert System </a> 
+               
+              </h2>
+            </div>
+            <p>
+              Detect pedestrians approaching or crossing a road and alert drivers to potential collisions or safety hazards.
+              We can extract features like head, two arms, two legs, etc, from an image of a human body and pass them to train a machine 
+              learning model. After training, the model can be used to detect and track humans in images and video streams. However, OpenCV has a 
+              built-in method to detect pedestriansIn developing countries like India, pedestrians follow non-complaint behaviour while crossing 
+              the road due to negligence of government towards the rule and regulations for the pedestrians. As a result pedestrian road crossing 
+              behaviour is becoming one of the major threat to the pedestrian safety at midblock crossing. 
+            
+            </p>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about_section layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 px-0">
+          <div class="img_container">
+            <div class="img-box">
+              <img src="{% static 'img/lanedetection.gif' %}" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-0">
+          <div class="detail-box">
+            <div class="heading_container ">
+              <h2>
+                <a href="{% url 'lane' %}" style="background-color:#2B7C5B;color:#E5B55C;">Lane Detection </a> 
+              
+              </h2>
+            
+            </div>
+            <p>
+              Lane line detection is a computer vision technique used in advanced driver-assistance systems (ADAS) to identify the boundaries
+               of traffic lanes on a roadway. It involves processing images or video frames captured by cameras mounted on the vehicle to detect 
+               lane markings, which are then used to guide lane-keeping and lane-centering functions, enhancing vehicle safety and driver 
+               assistance.
+            </p>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+ 
+  <section class="about_section layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 px-0 order-md-2"> 
+          <div class="img_container">
+            <div class="img-box">
+              <img src="{% static 'img/trafficsign.gif' %}"  />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-0 order-md-1"> 
+          <div class="detail-box">
+            <div class="heading_container ">
+              <h2> 
+                <a href="{% url 'traffic' %}" style="background-color:#2B7C5B;color:#E5B55C;">Traffic Sign Detection </a> 
+                
+              </h2>
+            </div>
+            <p>
+              Traffic sign detection systems work by capturing images of the roadway using vehicle-mounted cameras. The images undergo 
+              preprocessing to enhance quality and visibility of signs. Color segmentation helps in identifying regions with typical traffic
+               sign colors. Shape detection algorithms then classify these regions based on common shapes of traffic signs (e.g., circular for
+                speed limits). Feature extraction techniques like Histogram of Oriented Gradients (HOG) are used to capture detailed features 
+                of the signs. Machine learning models, particularly Convolutional Neural Networks (CNNs), are trained to classify these features 
+                into specific traffic sign categories. The system then compares detected signs with a database of known signs to ensure accuracy 
+                and provide real-time information to the driver or the autonomous system.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <br>
+  <br>
+
+  <!-- footer section -->
+  <footer class="footer_section" style="background-color:#OcOcOc; color:#E5B55C; padding: 20px 0; font-family:Bree serif; font-size: 0.9em;">
+    <div class="container">
+      <div class="row justify-content-center">
+        <!-- About Us Section -->
+        <div class="col-md-3 text-center mb-3">
+          <h5 style="font-size: 1em; font-weight: 600; margin-bottom: 10px;">About</h5>
+          <p style="font-weight: 300; margin-bottom: 0;">Safety. Innovation. Precision.</p>
+        </div>
+  
+        <!-- Quick Links Section -->
+        <div class="col-md-3 text-center mb-3">
+          <h5 style="font-size: 1em; font-weight: 600; margin-bottom: 10px;">Quick Links</h5>
+          <ul style="list-style: none; padding-left: 0; margin-bottom: 0;">
+            <li><a href="{% url 'home' %}" style="color:#E5B55C; text-decoration: none;">Home</a></li>
+            <li><a href="#section" style="color:#E5B55C; text-decoration: none;">About</a></li>
+            <li><a href="{% url 'service' %}" style="color:#E5B55C; text-decoration: none;">Services</a></li>
+          </ul>
+        </div>
+  
+        <!-- Contact Details Section -->
+        <div class="col-md-3 text-center mb-3">
+          <h5 style="font-size: 1em; font-weight: 600; margin-bottom: 10px;">Contact Us</h5>
+        <p style="font-weight: 300; margin-bottom: 0;">
+          &nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp; Email: infodrivewiseai@gmail.com <br>
+          &nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp; Address: 123 Drive Wise, Trivandrum Kerala India
+          </p>
+        </div>
+      </div>
+  
+      <!-- Footer Bottom Section -->
+      <div class="row mt-3">
+        <div class="col-md-12 text-center">
+          <p style="margin-bottom: 0;">&copy; 2024 Drive Wise. All Rights Reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!--end of footer-->
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/custom.js"></script>
+</body>
+
+</html>

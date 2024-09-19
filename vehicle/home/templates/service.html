@@ -1,0 +1,448 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service</title>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="{% static 'img/logo.jpg' %}" type="image/x-icon" style="border-radius:30px;">
+
+    <style>
+        /* Existing CSS Styles */
+        
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+       
+        overflow: hidden;
+    }
+
+    /* Fullscreen video */
+    .bg-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1; /* Ensures the video is behind all content */
+    }
+
+    /* Content */
+    .content {
+        position: relative;
+        z-index: 1;
+        color: white;
+        text-align: center;
+    }
+        .phone-container { width: 375px; height: 667px; border: 5px solid #00172c; border-radius: 36px; box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3); display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; background: #000; }
+        .video-content { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow: hidden; z-index: 1; }
+        .video-content video { width: 100%; height: 100%; object-fit: cover; }
+        .ui-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 20px; box-sizing: border-box; opacity: 0; transform: translateY(100%); transition: opacity 1s ease, transform 1s ease; z-index: 2; }
+        .ui-container.show { opacity: 1; transform: translateY(0); }
+        .start-button { width: 120px; height: 120px; border: 5px solid #00f0ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 20px auto; background-color: #222; box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); font-size: 18px; color: #00f0ff; cursor: pointer; transition: transform 0.2s; }
+        .start-button:hover { transform: scale(1.05); }
+        .button-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 400px; margin: 0 auto; }
+        .button 
+        { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; 
+            background: black; border-radius: 8px; text-align: center; height: 120px; width: 150px; }
+            
+        .icon { font-size: 2rem; }
+        h3 { color: white; font-size: 0.9rem; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; -webkit-transition: .4s; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; -webkit-transition: .4s; transition: .4s; }
+        input:checked + .slider { background-color: #2196F3; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .slider.round { border-radius: 34px; }
+        .slider.round:before { border-radius: 50%; }
+        .map-container { width: 100%; height: 100%; display: none; position: absolute; top: 0; left: 0; z-index: 3; }
+        #map { width: 100%; height: 100%; }
+        .map-controls { position: absolute; bottom: 20px; right: 20px; background-color: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 8px; z-index: 4; }
+        .map-controls select { background: #333; color: #fff; border: 1px solid #00f0ff; padding: 5px; border-radius: 4px; }
+        .map-controls input { background: #333; color: #fff; border: 1px solid #00f0ff; padding: 5px; border-radius: 4px; margin-bottom: 10px; }
+        .back-button { position: absolute; top: 20px; left: 20px; background-color: #00f0ff; color: #000; border: none; border-radius: 8px; padding: 10px 20px; font-size: 16px; cursor: pointer; box-shadow: 0 0 10px rgba(0, 240, 255, 0.5); z-index: 4; }
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .button-container .button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: black;
+            border-radius: 8px;
+            text-align: center;
+            height: 120px;
+            width: 150px;
+        }
+        
+        .button-container .button:last-child {
+            grid-column: span 2; /* Make the button span across both columns */
+            justify-self: center; /* Center the button within the container */
+        }
+        #background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1; /* Sends the video to the background */
+        }
+        
+        .ui-container {
+            position: relative;
+            z-index: 1; /* Ensure UI elements are above the video */
+            color: white; /* Adjust text color for visibility */
+        }
+        
+        .start-button, .button-container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Adjust other UI elements as needed */
+        .button {
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: semi-transparent background for buttons */
+            padding: 10px;
+            border-radius: 5px;
+            margin: 2px;
+        }
+        .button {
+            display: flex;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: semi-transparent background for buttons */
+            padding: 10px;
+            border-radius: 5px;
+            margin: 2px;
+            color: white;
+        }
+        
+        .icon {
+            margin-right: 10px;
+        }
+        
+        .icon img {
+            width: 30px; /* Adjust the width as needed */
+            height: auto;
+        }
+        
+    
+    
+    </style>
+</head>
+
+<body>
+    <video class="bg-video" autoplay loop muted>
+       
+    </video>
+    <div class="phone-container">
+        <div class="video-content">
+            <video id="intro-video" autoplay muted>
+                <source src="{% static 'video/servive3.mp4' %}" type="video/mp4" />
+            </video>
+        </div>
+        <div class="ui-container" id="ui-container">
+            <video autoplay muted loop id="background-video">
+                <source src="{% static 'video/start.mp4' %}" type="video/mp4">
+               
+            </video>
+            <div class="start-button">START</div>
+    
+    <div class="button-container">
+            <div class="button-container">
+                <div class="button">
+                    <div class="icon">
+                        <img src="{% static 'video/drowsiness.gif' %}"  class="traffic-gif">
+                    </div>
+                    <h3>DrowsinessDetection</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="drowsiness-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="button">
+                    <div class="icon">
+                        <img src="{% static 'video/pedestrian.gif' %}"  class="traffic-gif">
+                    </div>
+                    <h3>Pedestrian Detection</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="pedestrian-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="button">
+                    <div class="icon">
+                        <img src="{% static 'video/trafficsign.gif' %}"  class="traffic-gif">
+                    </div>
+                    <h3>Traffic Sign Detection</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="traffic-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="button">
+                    <div class="icon">
+                        <img src="{% static 'video/lane.gif' %}"  class="traffic-gif">
+                    </div>
+                    <h3>Lane Detection</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="lane-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="button">
+                    <div class="icon">
+                        <img src="{% static 'video/map.gif' %}"  class="traffic-gif">
+                    </div>
+                    <h3>GoogleMapDetection</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="map-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+         
+            </div>
+        </div>
+        <div class="map-container" id="map-container">
+            <button class="back-button" id="back-button">Back</button>
+            <div class="map-controls">
+                <input type="text" id="start-address" placeholder="Start Address" />
+                <input type="text" id="destination-address" placeholder="Destination Address" />
+                <button id="search-route">Search Route</button>
+                <select id="map-style-selector">
+                    <option value="streets-v11">Streets</option>
+                    <option value="satellite-v9">Satellite</option>
+                    <option value="terrain-rgb">Terrain</option>
+                </select>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('intro-video');
+        const uiContainer = document.getElementById('ui-container');
+        const mapContainer = document.getElementById('map-container');
+        const backButton = document.getElementById('back-button');
+        const mapElement = document.getElementById('map');
+        const mapStyleSelector = document.getElementById('map-style-selector');
+        const searchRouteButton = document.getElementById('search-route');
+        const startAddressInput = document.getElementById('start-address');
+        const destinationAddressInput = document.getElementById('destination-address');
+        let map;
+    
+        video.onended = () => {
+            uiContainer.classList.add('show');
+        };
+    
+        document.querySelectorAll('.switch input').forEach(toggle => {
+            toggle.addEventListener('change', function () {
+                let url = '';
+    
+                if (this.id === 'drowsiness-toggle') {
+                    url = '{% url "run_detection_script" %}';
+                    if (this.checked) {
+                        setTimeout(() => {
+                            this.checked = false;
+                            mapContainer.style.display = 'none';
+                        }, 10000);
+                    }
+                } else if (this.id === 'pedestrian-toggle') {
+                    url = '{% url "run_ped_script" %}';
+                    if (this.checked) {
+                        setTimeout(() => {
+                            this.checked = false;
+                        }, 10000);
+                    }
+                } else if (this.id === 'traffic-toggle') {
+                    url = '{% url "run_traffic_script" %}';
+                    if (this.checked) {
+                        setTimeout(() => {
+                            this.checked = false;
+                        }, 10000);
+                    }
+                } else if (this.id === 'lane-toggle') {
+                    url = '{% url "run_lane_script" %}';
+                    if (this.checked) {
+                        setTimeout(() => {
+                            this.checked = false;
+                        }, 10000);
+                    }
+                } else if (this.id === 'map-toggle') {
+                    mapContainer.style.display = this.checked ? 'block' : 'none';
+                    if (this.checked) {
+                        showMap();
+                    }
+                }
+    
+                if (url !== '') {
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => console.log(data))
+                        .catch(error => console.error('Error:', error));
+                }
+            });
+        });
+    
+        backButton.addEventListener('click', function () {
+            mapContainer.style.display = 'none';
+            document.getElementById('map-toggle').checked = false;
+        });
+    
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic3ViaGFtcHJlZXQiLCJhIjoiY2toY2IwejF1MDdodzJxbWRuZHAweDV6aiJ9.Ys8MP5kVTk5P9V2TDvnuDg';
+    
+        function showMap() {
+            if (mapContainer.style.display !== 'block') return;
+    
+            if (!map) {
+                map = new mapboxgl.Map({
+                    container: mapElement,
+                    style: 'mapbox://styles/mapbox/streets-v11',
+                    zoom: 12
+                });
+            }
+    
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                map.setCenter([longitude, latitude]);
+    
+                new mapboxgl.Marker({ color: 'blue' })
+                    .setLngLat([longitude, latitude])
+                    .addTo(map);
+    
+                reverseGeocode(latitude, longitude, (placeName) => {
+                    speakLocation(placeName);
+                });
+    
+                if (map.getSource('route')) {
+                    map.removeLayer('route');
+                    map.removeSource('route');
+                }
+    
+                startAddressInput.value = ' ';
+                destinationAddressInput.value = ' ';
+    
+                searchRouteButton.addEventListener('click', function () {
+                    const startAddress = startAddressInput.value;
+                    const destinationAddress = destinationAddressInput.value;
+    
+                    if (startAddress && destinationAddress) {
+                        fetchGeocode(startAddress, (startCoordinates) => {
+                            fetchGeocode(destinationAddress, (destinationCoordinates) => {
+                                addMarkersAndRoute(startCoordinates, destinationCoordinates);
+                            });
+                        });
+                    }
+                });
+    
+                function fetchGeocode(address, callback) {
+                    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const [lng, lat] = data.features[0].center;
+                            callback([lng, lat]);
+                        })
+                        .catch(error => console.error('Error with geocoding:', error));
+                }
+    
+                function addMarkersAndRoute(start, destination) {
+                    if (map.getSource('route')) {
+                        map.removeLayer('route');
+                        map.removeSource('route');
+                    }
+    
+                    new mapboxgl.Marker({ color: 'green' })
+                        .setLngLat(start)
+                        .addTo(map);
+    
+                    new mapboxgl.Marker({ color: 'red' })
+                        .setLngLat(destination)
+                        .addTo(map);
+    
+                    fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=${mapboxgl.accessToken}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const route = data.routes[0].geometry;
+    
+                            map.addSource('route', {
+                                'type': 'geojson',
+                                'data': {
+                                    'type': 'Feature',
+                                    'geometry': route
+                                }
+                            });
+    
+                            map.addLayer({
+                                'id': 'route',
+                                'type': 'line',
+                                'source': 'route',
+                                'layout': {
+                                    'line-join': 'round',
+                                    'line-cap': 'round'
+                                },
+                                'paint': {
+                                    'line-color': '#00f0ff',
+                                    'line-width': 5
+                                }
+                            });
+    
+                            const bounds = new mapboxgl.LngLatBounds();
+                            route.coordinates.forEach(coord => {
+                                bounds.extend(coord);
+                            });
+                            map.fitBounds(bounds, { padding: 20 });
+                        })
+                        .catch(error => console.error('Error with directions API:', error));
+                }
+            });
+    
+            mapStyleSelector.addEventListener('change', function () {
+                map.setStyle(`mapbox://styles/mapbox/${this.value}`);
+            });
+        }
+    
+        function reverseGeocode(latitude, longitude, callback) {
+            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${mapboxgl.accessToken}`)
+                .then(response => response.json())
+                .then(data => {
+                    const placeName = data.features[0].place_name;
+                    callback(placeName);
+                })
+                .catch(error => console.error('Error with reverse geocoding:', error));
+        }
+    
+        function speakLocation(placeName) {
+            const utterance = new SpeechSynthesisUtterance();
+            utterance.text = `You are currently at ${placeName}.`;
+            utterance.lang = 'en-US';
+            speechSynthesis.speak(utterance);
+        }
+    </script>
+    
+    
+    
+</body>
+
+</html>
