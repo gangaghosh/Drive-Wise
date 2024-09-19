@@ -1,4 +1,4 @@
-# Drive-Wise
+# Drive Wise
 <h2>Drive Wise: AI-Powered Driving Safety Enhancement</h2>
 Drive Wise is a cutting-edge system designed to improve driving safety using Artificial Intelligence (AI) and Machine Learning (ML), built with Django. This project focuses on key areas such as Drowsiness Detection, Lane Detection, Traffic Sign Detection, and Pedestrian Crossing Alerts. By utilizing real-time image recognition and data processing, Drive Wise provides drivers with timely feedback and alerts, helping to reduce accidents and enhance road safety.
 
