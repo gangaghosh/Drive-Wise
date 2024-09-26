@@ -3,7 +3,7 @@ opencv-python
 numpy
 pyttsx3
 imutils
-dlib==19.24.0  # Use the version that matches the wheel you installed
+dlib‑19.24.0‑cp310‑cp310‑win_amd64.whl
 scipy
 folium
 requests
