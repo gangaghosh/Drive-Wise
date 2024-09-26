@@ -18,4 +18,4 @@ beautifulsoup4
 Pillow
 python-dotenv
 fastapi
-
+setuptools
